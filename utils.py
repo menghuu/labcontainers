@@ -245,3 +245,23 @@ def _check_login(username, password, conn):
         return False
     else:
         return True
+
+
+
+def _init_lab_db(conn):
+    cursor = conn.cursor()
+    cursor.execute(
+        'CREATE TABLE lab_users'+\
+        '(uid INTEGER PRIMARY KEY AUTOINCREMENT,'+\
+            'username TEXT NOT NULL UNIQUE,'+\
+            'password TEXT NOT NULL,'+\
+            'salt TEXT NOT NULL);'
+        )
+    cursor.execute(
+            'CREATE TABLE lab_containers(\
+                container_name TEXT NOT NULL PRIMARY KEY UNIQUE,\
+                belongs_to_username TEXT NOT NULL,\
+                FOREIGN KEY(belongs_to_username) REFERENCES \
+                    lab_users(username)\
+                );')
+    conn.commit()

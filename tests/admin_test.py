@@ -1,5 +1,5 @@
 import unittest
-from utils import _check_login, _add_lab_user
+from utils import _check_login, _add_lab_user, _init_lab_db
 import sqlite3
 import pytest
 
