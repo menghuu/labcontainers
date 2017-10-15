@@ -5,3 +5,4 @@
 /lab.db
 /lab.db2
 /*.db*
+/admin.py

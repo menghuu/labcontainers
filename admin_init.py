@@ -33,4 +33,18 @@ if __name__ == '__main__':
         os.remove(db_path)
     conn = sqlite3.connect(db_path) # create db
     _init_lab_db(conn)   # create db structure 
-    _add_lab_user('root', 'root', conn) # add sample user
+    #_add_lab_user('root', 'root', conn) # add sample user
+    users = [
+                ('ttg', 'ttg314'),
+                ('jgl', 'jgl159'),
+                ('mh', 'mongoose'),
+                ('m', 'mongoose')
+                ('why', 'why358'),
+                ('yrc', 'yrc979'),
+                ('yql', 'yql323'),
+                ('qqw', 'qqw846'),
+                ('rzy', 'rzy264'),
+                ('sl', 'sl338')
+            ]
+    for username, password in users:
+        _add_lab_user(username, password, conn)
