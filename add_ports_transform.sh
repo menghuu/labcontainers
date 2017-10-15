@@ -24,7 +24,7 @@ for ((i=0;i<$ports_length;i++))
 do 
   #echo "10.18.242.$[$i + 20]"
   #echo "60$[$i + 100]"
-  iptables -t nat -I PREROUTING -i $eth_name -p tcp --dport $[$i + $base_port] -j DNAT --to $base_ip$[$i + $start_ip]:22
+  iptables -t nat -I PREROUTING -p tcp --dport $[$i + $base_port] -j DNAT --to $base_ip$[$i + $start_ip]:22
   #ls $[$base_port+200000000]hello 2>/dev/null
   #echo "${eth_name} $[$i + $base_port] $base_ip$[$i + $start_ip]"
 done
