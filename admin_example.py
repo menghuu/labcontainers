@@ -33,7 +33,6 @@ if __name__ == '__main__':
         os.remove(db_path)
     conn = sqlite3.connect(db_path) # create db
     _init_lab_db(conn)   # create db structure 
-    #_add_lab_user('root', 'root', conn) # add sample user
     users = [
                 ('root', 'root'),
             ]
