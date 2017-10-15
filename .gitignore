@@ -1,3 +1,7 @@
 /lab.db*
 /__pycache__
 /.cache
+/config.ini
+/lab.db
+/lab.db2
+/*.db*
