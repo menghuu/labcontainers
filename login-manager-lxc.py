@@ -5,7 +5,7 @@ import getpass
 import json
 import subprocess
 import sys
-
+import os
 import pylxd
 
 from manager_lxc_utils import (_change_container_key, _container_state,
@@ -32,8 +32,9 @@ def _login(conn):
 
 
 if __name__ == '__main__':
+    current_path = os.path.split(os.path.abspath(__file__))[0]
     config = configparser.ConfigParser()
-    config.read('/home/m/projects/labcontainers/config.ini')
+    config.read(os.path.join(current_path, 'config.ini'))
     ip_start = config['DEFAULT'].get('ip_start')
     port_start = config['DEFAULT'].getint('port_start')
     default_image_fingerprint = config['DEFAULT'].get('default_image_fingerprint')
