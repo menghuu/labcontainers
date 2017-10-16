@@ -10,11 +10,12 @@ from utils import _check_login, _images_detail, _print_details
 
 
 class Prompt(cmd.Cmd, object):
-    def __init__(self, db_path, lxc_client, port_start, ip_start,default_fingerprint, nobody='nobody'):
+    def __init__(self, db_path, lxc_client, port_start, ip_start,default_fingerprint, profiles=None, nobody='nobody'):
         super(Prompt, self).__init__()
         self._nobody = nobody or 'nobody'
         self._user = LabUser(self._nobody, db_path, lxc_client, port_start, ip_start)
         self.prompt = self._user.name+ '@gpu-server > '
+        self._profiles = profiles 
         self.intro = 'welcome to haitaozhao\'s lab gpu server\nyou should login and do something on your lxc containers\n`help command` will show how to use the command `command`'
         if isinstance(db_path, sqlite3.Connection):
             self._conn = db_path
@@ -105,7 +106,7 @@ class Prompt(cmd.Cmd, object):
             fingerprint = self._default_fingerprint
         container_name = containers_name[0]
         try:
-            if self._user.create_container(container_name , fingerprint) == 1:
+            if self._user.create_container(container_name , fingerprint, self._profiles) == 1:
                 print('create: success')
             else:
                 print('not success, you may not own this container : ', container_name)
@@ -209,7 +210,7 @@ class Prompt(cmd.Cmd, object):
             fingerprint = self._default_fingerprint
         container_name = containers_name[0]
         try:
-            if self._user.launch_container(container_name, fingerprint) == 1:
+            if self._user.launch_container(container_name, fingerprint, self._profiles) == 1:
                 print('launch: success')
             else:
                 print('launch: not success, container name is {}'.format(container_name))

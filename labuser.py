@@ -77,11 +77,11 @@ class LabUser(object):
         except lab_exceptions.LabException:
             return 0
 
-    def launch_container(self, container_name, base_image_fingerprint):
+    def launch_container(self, container_name, base_image_fingerprint, profiles=None):
         try:
             _launch_container(
                 container_name, self.name, self._conn, self._client,
-                base_image_fingerprint
+                base_image_fingerprint, profiles
             )
             return 1
         except lab_exceptions.LabException:

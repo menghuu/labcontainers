@@ -12,13 +12,15 @@ if __name__ == '__main__':
     ip_start =  '10.18.242.2/24'
     port_start = '61000' 
     nobody = 'nobody'
+    lxc_nvidia_profile = 'nvidia'
 
     config = configparser.ConfigParser()
     config['DEFAULT'] = {
         'ip_start': ip_start,
         'port_start': str(port_start),
         'default_image_fingerprint': default_image_fingerprint,
-        'nobody': nobody
+        'nobody': nobody,
+        'lxc_image_profile': lxc_nvidia_profile
     }
     current_path = os.path.split(os.path.abspath(__file__))[0]
     db_path = os.path.join(current_path, 'lab.db')
