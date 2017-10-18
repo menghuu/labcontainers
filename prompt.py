@@ -8,7 +8,6 @@ import lab_exceptions
 from labuser import LabUser
 from utils import _check_login, _images_detail, _print_details
 
-
 class Prompt(cmd.Cmd, object):
     def _make_help(self, helper):
         try:
@@ -220,6 +219,8 @@ class Prompt(cmd.Cmd, object):
         self._make_help('delete')
     def do_start(self, args):
         args = self._make_args('start', args)
+        if args is None:
+            return
         containers_name = args.names
         for container_name in containers_name:
             try:

@@ -1,17 +1,12 @@
 import collections
 import json
-
+import os
 import pylxd
-
 from lab_exceptions import LabContainerStateException
 from utils import (_check_container_name, _check_password, _check_username,
                    _container_state, _iptables_port, gen_keys)
 
 ContainerState = collections.namedtuple("ContainerState", "belongs_to, status_code")
-
-import os
-
-
 
 def _start_container(container_name, username, conn, client):
 
