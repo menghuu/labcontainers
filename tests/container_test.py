@@ -292,7 +292,42 @@ class TestCreateContainer(unittest.TestCase):
             self._exist_container_in_lxc(container_name)
         )
         cursor.close()
-    def test_details(self):
+
+        # if the container does not exist, start it!
+        cursor = self.conn.cursor()
+        cursor.execute(
+            'insert into lab_containers(container_name, belongs_to_username)'+\
+            'values(?, ?);',
+            (container_name, username)
+        )
+        self.conn.commit()
+        self.assertRaises(
+            LabContainerStateException,
+            _start_container,
+            container_name, username, self.conn, self.client
+        )
+
+        self.assertRaises(
+            LabContainerStateException,
+            _restart_container,
+            container_name, username, self.conn, self.client
+        )
+        _delete_container(
+                container_name, username, self.conn, self.client
+        )
+
+        cursor = self.conn.cursor()
+        cursor.execute(
+            'insert into lab_containers(container_name, belongs_to_username)'+\
+            'values(?, ?);',
+            (container_name, username)
+        )
+        self.conn.commit()
+        _launch_container(
+            container_name, username, self.conn, self.client, self.fingerprint
+        )
+
+    def testdetails(self):
         username = self._gen_name('testing-user-details')
         container_name = self._gen_name('testing-container-details')
         self._create_container_with_user(container_name, username)
@@ -325,6 +360,8 @@ class TestCreateContainer(unittest.TestCase):
             container_name, username, self.conn, self.client, ''
         )
         _start_container(container_name, username, self.conn, self.client)
+        import time
+        time.sleep(5)
         print('will it put the key?')
         keys = _change_container_key(
             container_name, username, self.conn, self.client, ''

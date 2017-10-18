@@ -196,8 +196,13 @@ def _delete_container(container_name, username, conn, client, enforce=False):
         # 属于你，但是不存在, 应该记录
         # log 不同步
         cursor = conn.cursor()
-        cursor.execute('delete from lab_containers where belongs_to = ?;', (container_name,))
+        cursor.execute(
+            'delete from lab_containers '+\
+            'where container_name = ? and belongs_to_username = ?;',
+            (container_name,username)
+        )
         conn.commit()
+        return
     elif belongs_to == username and status_code in acceptable_code:
         # 属于你,并且正在运行
         if enforce:
