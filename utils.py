@@ -133,7 +133,7 @@ def _iptables_port(container_ip, port_start=61000, ip_start='10.18.242.2/24'):
     if (container_ip_int & _mask_int) != (_ip_int & _mask_int):
         raise ValueError('container_ip is not at the same subnet with ip_start')
     port = port_start + container_ip_int - _ip_int
-    return port 
+    return port
 
 
 def _owning_containers_name(username, conn):
@@ -187,7 +187,7 @@ def _images_detail(client):
 def _merge_details(details_one, details_two):
     for k in details_one:
         details_one[k] += details_two[k]
-    return details_one 
+    return details_one
 
 def _add_lab_user(username, password, conn):
     if isinstance(password, bytes):
@@ -206,9 +206,9 @@ def _add_lab_user(username, password, conn):
         cursor.execute('insert into lab_users(username, password, salt) values(?,?,?);', (username, password_after, b64encode(salt).decode('utf-8')))
         conn.commit()
         cursor.close()
-        return True 
+        return True
     else:
-        return False 
+        return False
 
 def _del_lab_user(username, conn, client):
     cursor = conn.cursor()

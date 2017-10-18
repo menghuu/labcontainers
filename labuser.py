@@ -5,7 +5,8 @@ import lab_exceptions
 from manager_lxc_utils import (_change_container_key, _container_details,
                                _create_container, _delete_container,
                                _launch_container, _restart_container,
-                               _start_container, _stop_container)
+                               _start_container, _stop_container,
+                               _change_container_password)
 from utils import _owning_containers_name
 
 
@@ -16,10 +17,12 @@ class LabUser(object):
 
     def is_mine(self, containers_name):
         import collections
+
         if isinstance(containers_name, collections.Iterable):
             pass
         else:
             containers_name = [containers_name]
+
         return [True if container_name in self.owning_containers_name\
                 else False for container_name in containers_name]
     @property
@@ -28,6 +31,7 @@ class LabUser(object):
 
     def __init__(self, name, db_path, lxc_client, port_start, ip_start):
         self._name = name
+
         if isinstance(db_path, sqlite3.Connection):
             self._conn = db_path
         else:
@@ -36,14 +40,14 @@ class LabUser(object):
         self._port_start = port_start
         self._ip_start = ip_start
 
-    def create_container(
-        self, container_name, base_image_fingerprint, profiles=None):
+    def create_container(self, container_name, base_image_fingerprint, profiles=None):
         try:
             _create_container(
                 container_name, self.name, self._conn,
                 self._client, base_image_fingerprint,
                 profiles=profiles
             )
+
             return 1
         except lab_exceptions.LabException:
             return 0
@@ -54,6 +58,7 @@ class LabUser(object):
                 container_name, self.name,
                 self._conn, self._client
             )
+
             return 1
         except lab_exceptions.LabException:
             return 0
@@ -64,6 +69,7 @@ class LabUser(object):
                 container_name, self.name, self._conn,
                 self._client, enforce=enforce
             )
+
             return 1
         except lab_exceptions.LabException:
             return 0
@@ -73,6 +79,7 @@ class LabUser(object):
             _start_container(
                 container_name, self.name, self._conn, self._client
             )
+
             return 1
         except lab_exceptions.LabException:
             return 0
@@ -83,6 +90,7 @@ class LabUser(object):
                 container_name, self.name, self._conn, self._client,
                 base_image_fingerprint, profiles
             )
+
             return 1
         except lab_exceptions.LabException:
             return 0
@@ -92,6 +100,7 @@ class LabUser(object):
             _restart_container(
                 container_name, self.name, self._conn, self._client
             )
+
             return 1
         except lab_exceptions.LabException:
             return 0
@@ -106,13 +115,14 @@ class LabUser(object):
         except lab_exceptions.LabContainerStateException as e:
             if e.status_code is None:
                 return OrderedDict([
-                        ('name',[container_name]),
-                        ('status',['not exist']),
-                        ('hostname',['not exist']),
-                        ('ipv4',['not exist']),
-                        ('create_at',['not exist']),
-                        ('port',['not exist'])
+                        ('name', [container_name]),
+                        ('status', ['not exist']),
+                        ('hostname', ['not exist']),
+                        ('ipv4', ['not exist']),
+                        ('create_at', ['not exist']),
+                        ('port', ['not exist'])
                         ])
+
             if e.belongs_to != self.name:
                 return OrderedDict([
                         ('name',[container_name]),
@@ -125,6 +135,7 @@ class LabUser(object):
     def containers_details(self, containers_name):
         import collections
         from collections import OrderedDict
+
         if isinstance(containers_name, collections.Iterable):
             containers_name = list(containers_name)
         else:
@@ -137,6 +148,7 @@ class LabUser(object):
                     ('create_at',[]),
                     ('port',[])
                     ])
+
         for container_name in containers_name:
             try:
                 d = _container_details(
@@ -153,6 +165,7 @@ class LabUser(object):
                             ('create_at',['not exist']),
                             ('port',['not exist'])
                             ])
+
                 if e.belongs_to != self.name:
                     d = OrderedDict([
                             ('name',[container_name]),
@@ -162,8 +175,10 @@ class LabUser(object):
                             ('create_at',['not belong']),
                             ('port',['not exist'])
                             ])
+
             for k in d:
                 details[k] += d[k]
+
         return details
 
     def change_key(self, container_name, private_key=''):
@@ -173,3 +188,12 @@ class LabUser(object):
             )
         except lab_exceptions.LabException:
             return None
+    def change_container_password(self, container_name, password):
+        try:
+            _change_container_password(
+                container_name, self.name, self._conn,
+                self._client, password)
+
+            return 1
+        except lab_exceptions.LabContainerStateException:
+            return 0

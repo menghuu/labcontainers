@@ -5,8 +5,6 @@ import sqlite3
 import unittest
 import uuid
 import warnings
-from functools import partial
-
 import pylxd
 import pytest
 
@@ -14,8 +12,8 @@ from lab_exceptions import LabContainerStateException
 from manager_lxc_utils import (_change_container_key, _container_details,
                                _create_container, _delete_container,
                                _launch_container, _restart_container,
-                               _start_container, _stop_container)
-
+                               _start_container, _stop_container,
+                               _change_container_password)
 
 class TestCreateContainer(unittest.TestCase):
 
@@ -24,7 +22,7 @@ class TestCreateContainer(unittest.TestCase):
         cursor = self.conn.cursor()
         cursor.execute(
             'insert into lab_users(username, password) values (?,?);',
-            (username, 'password')
+            (username, password)
         )
         self.conn.commit()
         _create_container(container_name, username, self.conn, self.client, self.fingerprint)
@@ -99,6 +97,27 @@ class TestCreateContainer(unittest.TestCase):
         # 重复创建应该会直接返回，不会出错
 
         _create_container(container_name, username, self.conn, self.client, self.fingerprint)
+    def test_change_container_password(self):
+        username = self._gen_name('testing-user-change-password')
+        password = 'password'
+        container_name = 'testing-container-change-password'
+        self._create_container_with_user(
+            container_name, username
+        )
+
+        with pytest.raises(LabContainerStateException):
+            _change_container_password(
+                container_name, username,
+                self.conn, self.client, 'ceshimima'
+            )
+        _start_container(
+            container_name, username, self.conn, self.client
+        )
+        _change_container_password(
+            container_name, username,
+            self.conn, self.client, 'ceshimima'
+        )
+
 
     @classmethod
     def tearDownClass(self):
@@ -260,7 +279,7 @@ class TestCreateContainer(unittest.TestCase):
         )
 
         print(_container_details(
-            container_name, username, self.conn, self.client, 
+            container_name, username, self.conn, self.client,
             port_start=61000, ip_start='10.18.242.2/24'
         ))
 

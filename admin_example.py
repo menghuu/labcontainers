@@ -8,9 +8,12 @@ import os
 
 if __name__ == '__main__':
     client = pylxd.Client()
-    default_image_fingerprint = client.images.all()[0].fingerprint 
+    try:
+        default_image_fingerprint = client.images.get_by_alias('nvidia').fingerprint
+    except pylxd.exceptions.NotFound:
+        default_image_fingerprint = client.images.all()[0].fingerprint
     ip_start =  '10.18.242.2/24'
-    port_start = '61000' 
+    port_start = '61000'
     nobody = 'nobody'
     lxc_nvidia_profile = 'nvidia'
 
@@ -34,7 +37,7 @@ if __name__ == '__main__':
     if os.path.exists(db_path):
         os.remove(db_path)
     conn = sqlite3.connect(db_path) # create db
-    _init_lab_db(conn)   # create db structure 
+    _init_lab_db(conn)   # create db structure
     users = [
                 ('root', 'root'),
             ]

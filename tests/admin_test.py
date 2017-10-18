@@ -29,4 +29,4 @@ class AdminTest(unittest.TestCase):
         self.assertTrue(_add_lab_user(username, password, self.conn))
 
         self.assertTrue(_check_login(username, password, self.conn))
-        
+

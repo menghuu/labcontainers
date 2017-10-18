@@ -11,7 +11,7 @@ from utils import _merge_details, _print_details
 class LabUserTest(unittest.TestCase):
     def _gen_name(self, name):
         import random
-        import uuid 
+        import uuid
         if name.startswith('testing'):
             return name + ''.join(random.sample(uuid.uuid1().hex, 4))
         else:
@@ -41,7 +41,7 @@ class LabUserTest(unittest.TestCase):
         self.conn.commit()
         self.username = self._gen_name('testing-user')
         self.user = LabUser(
-            self.username, self.conn, self.client, 61000, '10.18.242.2/24' 
+            self.username, self.conn, self.client, 61000, '10.18.242.2/24'
         )
 
     def test_all(self):
@@ -52,11 +52,11 @@ class LabUserTest(unittest.TestCase):
         )
         username2 = self._gen_name('testing-user2')
         user2 = LabUser(
-            username2, self.db_path, self.client, 
+            username2, self.db_path, self.client,
             self.port_start, self.ip_start
         )
 
-        # if the container is exist, it will fail 
+        # if the container is exist, it will fail
         assert user2.create_container(
             container_name, self.fingerprint
         ) == 0
@@ -84,15 +84,15 @@ class LabUserTest(unittest.TestCase):
             )
         )
 
-        # add not belong to 
+        # add not belong to
         user2.create_container(
             username2, self.fingerprint
         )
         _print_details(self.user.containers_details(user2.owning_containers_name))
 
         print(user2.container_details('not-found'))
-        
-        # 
+
+        #
 
         _print_details(
             self.user.containers_details(
